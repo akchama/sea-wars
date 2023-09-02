@@ -8,9 +8,9 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (SelectableNPC.selectedNPC != null)
+            if (SelectObject.selectedNPC != null)
             {
-                player.GetComponent<Cannon>().FireAt(SelectableNPC.selectedNPC);
+                player.GetComponent<Cannon>().FireAt(SelectObject.selectedNPC);
             }
         }
     }

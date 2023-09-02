@@ -46,6 +46,11 @@ public class ClickToMove : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
+            if (InputHandler.npcSelected)
+            {
+                return;
+            }
+            
             Vector3 mousePosition = Input.mousePosition;
             mousePosition.z = -Camera.main.transform.position.z;
             Vector3 targetPosition = Camera.main.ScreenToWorldPoint(mousePosition);
@@ -54,7 +59,6 @@ public class ClickToMove : MonoBehaviour
             if (nearestNode != null && nearestNode.Walkable)
             {
                 Vector3 nearestNodePosition = (Vector3)nearestNode.position;
-                Debug.Log($"Clicked tile is walkable: {nearestNode.Walkable}");
                 aiLerp.destination = nearestNodePosition;  // Setting destination should suffice
             }
         }
