@@ -1,5 +1,5 @@
-using UnityEngine;
 using Pathfinding;
+using UnityEngine;
 
 public class ClickToMove : MonoBehaviour
 {
@@ -26,7 +26,6 @@ public class ClickToMove : MonoBehaviour
 
     private void OnPathComplete(Path p)
     {
-        Debug.Log("Path completed!");
         currentPath = p;
 
         if (!p.error)
@@ -52,11 +51,11 @@ public class ClickToMove : MonoBehaviour
             Vector3 targetPosition = Camera.main.ScreenToWorldPoint(mousePosition);
             GraphNode nearestNode = astarPath.GetNearest(targetPosition).node;
 
-            if (nearestNode != null)
+            if (nearestNode != null && nearestNode.Walkable)
             {
                 Vector3 nearestNodePosition = (Vector3)nearestNode.position;
-                aiLerp.destination = nearestNodePosition;
-                seeker.StartPath(transform.position, nearestNodePosition);
+                Debug.Log($"Clicked tile is walkable: {nearestNode.Walkable}");
+                aiLerp.destination = nearestNodePosition;  // Setting destination should suffice
             }
         }
 
