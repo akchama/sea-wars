@@ -25,8 +25,12 @@ public class Cannon : MonoBehaviour
         // Destroy both the cannonball and the NPC when the tween completes
         cannonballTween.OnComplete(() => 
         {
-            Destroy(cannonball);  // Destroys the cannonball itself
-            Destroy(target);  // Destroys the NPC
+            Destroy(cannonball);
+            HealthSystem healthSystem = target.GetComponent<HealthSystem>();
+            if (healthSystem != null)
+            {
+                healthSystem.TakeDamage(20);  // Deal 20 damage
+            }
         });
     }
 }
