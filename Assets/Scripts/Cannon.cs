@@ -7,19 +7,11 @@ public class Cannon : MonoBehaviour
     public GameObject cannonballPrefab;
     public float fireSpeed = 10.0f;
     public float arcHeightFactor = 0.2f;
-    private GameManager gameManager;
 
     private bool isShooting = false;
     private Coroutine shootingCoroutine;
 
-    private GameObject currentTarget = null;
-
     [SerializeField] public float shootingInterval = 2f;
-
-    private void Awake()
-    {
-        gameManager = FindObjectOfType<GameManager>();
-    }
 
     public void FireAt(GameObject target)
     {
@@ -59,28 +51,12 @@ public class Cannon : MonoBehaviour
         });
     }
 
-    public void StartShooting(GameObject target = null)
+    public void StartShooting(GameObject target)
     {
-        if (!gameObject.activeInHierarchy)
-        {
-            Debug.LogWarning("Cannot start shooting coroutine on inactive GameObject.");
-            return;
-        }
-
-        currentTarget = target != null ? target : gameManager.GetComponent<SelectObject>().selectedNPC;
-
-        if (currentTarget == null || !currentTarget.activeInHierarchy)
-        {
-            Debug.LogWarning("No valid target for shooting.");
-            return;
-        }
-
-        if (shootingCoroutine == null)
-        {
-            isShooting = true;
-            shootingCoroutine = StartCoroutine(ShootWithInterval());
-        }
-
+        if (shootingCoroutine != null) return;
+        
+        isShooting = true;
+        shootingCoroutine = StartCoroutine(ShootWithInterval(target));
     }
 
     public void StopShooting()
@@ -94,13 +70,13 @@ public class Cannon : MonoBehaviour
         isShooting = false;
     }
 
-    IEnumerator ShootWithInterval()
+    IEnumerator ShootWithInterval(GameObject target)
     {
         while (isShooting)
         {
-            if (currentTarget != null && currentTarget.activeInHierarchy)
+            if (target != null)
             {
-                FireAt(currentTarget);
+                FireAt(target);
             }
             else
             {

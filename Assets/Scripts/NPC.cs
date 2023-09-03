@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class NPC : MonoBehaviour, IHealthSystem
 {
-    [SerializeField] public int maxHealth = 100;
-    public int currentHealth;
+    [SerializeField] private int m_maxHealth;
+    [SerializeField] private int m_currentHealth;
+    public int maxHealth => m_maxHealth;
+    public int currentHealth => m_currentHealth;
 
     [SerializeField] public float repairRate = 2.0f;
     [SerializeField] public int repairAmount = 5;
@@ -18,7 +20,7 @@ public class NPC : MonoBehaviour, IHealthSystem
     private void Awake()
     {
         npcCannon = GetComponent<Cannon>();
-        currentHealth = maxHealth;
+        m_currentHealth = maxHealth;
         OnHealthChanged += (float health) => 
         {
             if (health <= 0.0f) 
@@ -34,7 +36,7 @@ public class NPC : MonoBehaviour, IHealthSystem
 
     public void TakeDamage(int damage)
     {
-        currentHealth = Mathf.Max(currentHealth - damage, 0);
+        m_currentHealth = Mathf.Max(currentHealth - damage, 0);
         OnHealthChanged((float)currentHealth / maxHealth);
 
         if (currentHealth <= 0)
@@ -95,7 +97,7 @@ public class NPC : MonoBehaviour, IHealthSystem
 
     private void Repair(int amount)
     {
-        currentHealth = Mathf.Min(currentHealth + amount, maxHealth);
+        m_currentHealth = Mathf.Min(currentHealth + amount, maxHealth);
         OnHealthChanged((float)currentHealth / maxHealth);
     }
 }

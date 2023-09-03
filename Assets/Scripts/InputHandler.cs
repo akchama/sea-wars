@@ -74,6 +74,7 @@ public class InputHandler : MonoBehaviour
 
         if (IsClickOverUI()) return;
 
-        player.GetComponent<Cannon>().StartShooting();
+        var target = gameManager.GetComponent<SelectObject>().selectedNPC;
+        player.GetComponent<Cannon>().StartShooting(target);
     }
 }

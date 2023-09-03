@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class Player : MonoBehaviour, IHealthSystem
 {
-    [SerializeField] public int maxHealth = 100;
-    public int currentHealth;
+    [SerializeField] private int m_maxHealth;
+    [SerializeField] private int m_currentHealth;
+    public int maxHealth => m_maxHealth;
+    public int currentHealth => m_currentHealth;
 
     [SerializeField] public float repairRate = 2.0f;
     [SerializeField] public int repairAmount = 5;
@@ -16,12 +18,12 @@ public class Player : MonoBehaviour, IHealthSystem
 
     private void Awake()
     {
-        currentHealth = maxHealth;
+        m_currentHealth = maxHealth;
     }
 
     public void TakeDamage(int damage)
     {
-        currentHealth = Mathf.Max(currentHealth - damage, 0);
+        m_currentHealth = Mathf.Max(currentHealth - damage, 0);
         OnHealthChanged((float)currentHealth / maxHealth);
 
         if (currentHealth <= 0)
@@ -71,7 +73,7 @@ public class Player : MonoBehaviour, IHealthSystem
 
     private void Repair(int amount)
     {
-        currentHealth = Mathf.Min(currentHealth + amount, maxHealth);
+        m_currentHealth = Mathf.Min(currentHealth + amount, maxHealth);
         OnHealthChanged((float)currentHealth / maxHealth);
     }
 }
