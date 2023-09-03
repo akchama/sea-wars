@@ -77,4 +77,10 @@ public class InputHandler : MonoBehaviour
         var target = gameManager.GetComponent<SelectObject>().selectedNPC;
         player.GetComponent<Cannon>().StartShooting(target);
     }
+
+    public void OnShootButtonPress()
+    {
+        var target = gameManager.GetComponent<SelectObject>().selectedNPC;
+        player.GetComponent<Cannon>().StartShooting(target);
+    }
 }

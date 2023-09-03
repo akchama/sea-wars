@@ -3,8 +3,8 @@ using UnityEngine;
 
 public interface IHealthSystem
 {
-    int maxHealth { get; }
-    int currentHealth { get; }
+    int MaxHealth { get; }
+    int CurrentHealth { get; }
 
     event Action<float> OnHealthChanged;
 

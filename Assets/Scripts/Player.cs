@@ -6,8 +6,8 @@ public class Player : MonoBehaviour, IHealthSystem
 {
     [SerializeField] private int m_maxHealth;
     [SerializeField] private int m_currentHealth;
-    public int maxHealth => m_maxHealth;
-    public int currentHealth => m_currentHealth;
+    public int MaxHealth => m_maxHealth;
+    public int CurrentHealth => m_currentHealth;
 
     [SerializeField] public float repairRate = 2.0f;
     [SerializeField] public int repairAmount = 5;
@@ -18,15 +18,15 @@ public class Player : MonoBehaviour, IHealthSystem
 
     private void Awake()
     {
-        m_currentHealth = maxHealth;
+        m_currentHealth = MaxHealth;
     }
 
     public void TakeDamage(int damage)
     {
-        m_currentHealth = Mathf.Max(currentHealth - damage, 0);
-        OnHealthChanged((float)currentHealth / maxHealth);
+        m_currentHealth = Mathf.Max(CurrentHealth - damage, 0);
+        OnHealthChanged((float)CurrentHealth / MaxHealth);
 
-        if (currentHealth <= 0)
+        if (CurrentHealth <= 0)
         {
             Die();
         }
@@ -63,7 +63,7 @@ public class Player : MonoBehaviour, IHealthSystem
     {
         while (true)
         {
-            if (currentHealth < maxHealth)
+            if (CurrentHealth < MaxHealth)
             {
                 Repair(repairAmount);
             }
@@ -73,7 +73,7 @@ public class Player : MonoBehaviour, IHealthSystem
 
     private void Repair(int amount)
     {
-        m_currentHealth = Mathf.Min(currentHealth + amount, maxHealth);
-        OnHealthChanged((float)currentHealth / maxHealth);
+        m_currentHealth = Mathf.Min(CurrentHealth + amount, MaxHealth);
+        OnHealthChanged((float)CurrentHealth / MaxHealth);
     }
 }
