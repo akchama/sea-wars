@@ -1,16 +1,17 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class GenericHealthBar : MonoBehaviour
 {
     public Slider slider;
-    public HealthSystem healthSystem;
+    [FormerlySerializedAs("healthSystem")] public NPC npc;
     public Image barImage;  // Reference to the Image component of the bar
     private Color initialColor; // To store the initial color set in the editor
     
     private void Start()
     {
-        if (!healthSystem) return;
+        if (!npc) return;
 
         // Initialize the Image component reference
         barImage = slider.fillRect.GetComponent<Image>();
@@ -18,15 +19,15 @@ public class GenericHealthBar : MonoBehaviour
         // Store initial color from the editor
         initialColor = barImage.color;
 
-        slider.maxValue = healthSystem.maxHealth;
-        slider.value = healthSystem.currentHealth;
-        healthSystem.OnHealthChanged += UpdateHealthBar;
+        slider.maxValue = npc.maxHealth;
+        slider.value = npc.currentHealth;
+        npc.OnHealthChanged += UpdateHealthBar;
     }
 
 
     private void UpdateHealthBar(float healthPercent)
     {
-        slider.value = healthPercent * healthSystem.maxHealth;
+        slider.value = healthPercent * npc.maxHealth;
 
         // Update color based on health
         Color newColor = Color.Lerp(Color.red, initialColor, healthPercent);

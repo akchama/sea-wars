@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
@@ -9,14 +8,14 @@ public class Cannon : MonoBehaviour
     public float fireSpeed = 10.0f;
     public float arcHeightFactor = 0.2f;
     private GameManager gameManager;
-    
+
     private bool isShooting = false;
-    private bool isShootingCoroutineRunning = false;  // New flag to track if coroutine is running
-    
+    private Coroutine shootingCoroutine;
+
     private GameObject currentTarget = null;
-    
+
     [SerializeField] public float shootingInterval = 2f;
-    
+
     private void Awake()
     {
         gameManager = FindObjectOfType<GameManager>();
@@ -36,56 +35,70 @@ public class Cannon : MonoBehaviour
         float tweenDuration = distance / fireSpeed;
 
         Tween cannonballTween = cannonball.transform.DOPath(path, tweenDuration, PathType.CatmullRom).SetEase(Ease.Linear);
-
-        // Destroy both the cannonball and the NPC when the tween completes
-        cannonballTween.OnComplete(() => 
+        cannonballTween.OnComplete(() =>
         {
             Destroy(cannonball);
-            HealthSystem healthSystem = target.GetComponent<HealthSystem>();
-            if (healthSystem != null)
+            if (target.CompareTag("NPC"))
             {
-                healthSystem.TakeDamage(20);  // Deal 20 damage
+                Debug.Log("Hit NPC!");
+                NPC npc = target.GetComponent<NPC>();
+                if (npc != null)
+                {
+                    npc.TakeDamage(20);
+                }
+            }
+            else if (target.CompareTag("Player"))
+            {
+                Debug.Log("Hit Player!");
+                Player player = target.GetComponent<Player>();
+                if (player != null)
+                {
+                    player.TakeDamage(20);
+                }
             }
         });
     }
 
-    public void StartShooting()
+    public void StartShooting(GameObject target = null)
     {
-        var newTarget = gameManager.GetComponent<SelectObject>().selectedNPC;
-
-        if (isShooting && newTarget == currentTarget)
+        if (!gameObject.activeInHierarchy)
         {
-            isShooting = false;
+            Debug.LogWarning("Cannot start shooting coroutine on inactive GameObject.");
             return;
         }
-        
-        currentTarget = newTarget;
 
-        isShooting = true;
-        
-        if (!isShootingCoroutineRunning)
+        currentTarget = target != null ? target : gameManager.GetComponent<SelectObject>().selectedNPC;
+
+        if (currentTarget == null || !currentTarget.activeInHierarchy)
         {
-            StartCoroutine(ShootWithInterval());
+            Debug.LogWarning("No valid target for shooting.");
+            return;
         }
+
+        if (shootingCoroutine == null)
+        {
+            isShooting = true;
+            shootingCoroutine = StartCoroutine(ShootWithInterval());
+        }
+
     }
-    
+
     public void StopShooting()
     {
-        isShooting = false;
-    }
-    
-    IEnumerator ShootWithInterval()
-    {
-        if (isShootingCoroutineRunning)
+        if (shootingCoroutine != null)
         {
-            yield break;
+            StopCoroutine(shootingCoroutine);
+            shootingCoroutine = null;
         }
 
-        isShootingCoroutineRunning = true;
+        isShooting = false;
+    }
 
+    IEnumerator ShootWithInterval()
+    {
         while (isShooting)
         {
-            if (currentTarget != null)
+            if (currentTarget != null && currentTarget.activeInHierarchy)
             {
                 FireAt(currentTarget);
             }
@@ -96,7 +109,7 @@ public class Cannon : MonoBehaviour
 
             yield return new WaitForSeconds(shootingInterval);
         }
-
-        isShootingCoroutineRunning = false;
+        
+        shootingCoroutine = null;
     }
 }
