@@ -8,6 +8,7 @@ public class Cannon : MonoBehaviour
     public GameObject cannonballPrefab;
     public float fireSpeed = 10.0f;
     public float arcHeightFactor = 0.2f;
+    private GameManager gameManager;
     
     private bool isShooting = false;
     private bool isShootingCoroutineRunning = false;  // New flag to track if coroutine is running
@@ -15,6 +16,11 @@ public class Cannon : MonoBehaviour
     private GameObject currentTarget = null;
     
     [SerializeField] public float shootingInterval = 2f;
+    
+    private void Awake()
+    {
+        gameManager = FindObjectOfType<GameManager>();
+    }
 
     public void FireAt(GameObject target)
     {
@@ -43,25 +49,29 @@ public class Cannon : MonoBehaviour
         });
     }
 
-    public void StartShooting(GameObject newTarget)
+    public void StartShooting()
     {
-        // If we are already shooting at this new target, stop shooting
+        var newTarget = gameManager.GetComponent<SelectObject>().selectedNPC;
+
         if (isShooting && newTarget == currentTarget)
         {
             isShooting = false;
             return;
         }
         
-        // Update the current target to be the new target
         currentTarget = newTarget;
 
-        // Start shooting
         isShooting = true;
-
+        
         if (!isShootingCoroutineRunning)
         {
             StartCoroutine(ShootWithInterval());
         }
+    }
+    
+    public void StopShooting()
+    {
+        isShooting = false;
     }
     
     IEnumerator ShootWithInterval()
