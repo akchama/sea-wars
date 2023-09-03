@@ -6,7 +6,7 @@ public class GameManager : MonoBehaviour
     public GameObject player;
 
     [SerializeField] public float shootingInterval = 2f;
-    
+
     private bool isShooting = false;
     private bool isShootingCoroutineRunning = false;  // New flag to track if coroutine is running
 
@@ -34,9 +34,9 @@ public class GameManager : MonoBehaviour
 
         while (isShooting)
         {
-            if (SelectObject.selectedNPC != null)
+            if (SelectObject.Instance.selectedNPC != null)  // Changed to Instance
             {
-                player.GetComponent<Cannon>().FireAt(SelectObject.selectedNPC);
+                player.GetComponent<Cannon>().FireAt(SelectObject.Instance.selectedNPC);  // Changed to Instance
             }
 
             yield return new WaitForSeconds(shootingInterval);

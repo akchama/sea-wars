@@ -112,7 +112,6 @@ GameObject:
   m_Component:
   - component: {fileID: 251758217152325665}
   - component: {fileID: 4963333922269780850}
-  - component: {fileID: 4242723538081660553}
   - component: {fileID: 8776182973194683754}
   m_Layer: 0
   m_Name: NPC
@@ -189,19 +188,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &4242723538081660553
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6126556980474896481}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3cf2134b863db404d8970c693be142e2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  selectionCirclePrefab: {fileID: 254859502964864220, guid: b27e15b47a6de034c87366722b2a2da7, type: 3}
 --- !u!58 &8776182973194683754
 CircleCollider2D:
   m_ObjectHideFlags: 0

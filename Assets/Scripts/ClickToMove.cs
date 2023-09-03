@@ -1,7 +1,7 @@
 using Pathfinding;
 using UnityEngine;
 
-public class ClickToMove : MonoBehaviour
+public class ClickToMove : MonoBehaviour, IClickable
 {
     private Seeker seeker;
     private AILerp aiLerp;
@@ -24,6 +24,17 @@ public class ClickToMove : MonoBehaviour
         previousPosition = transform.position;
     }
 
+    public void OnClick(Vector3 position)
+    {
+        GraphNode nearestNode = astarPath.GetNearest(position).node;
+
+        if (nearestNode != null && nearestNode.Walkable)
+        {
+            Vector3 nearestNodePosition = (Vector3)nearestNode.position;
+            aiLerp.destination = nearestNodePosition;
+        }
+    }
+
     private void OnPathComplete(Path p)
     {
         currentPath = p;
@@ -44,25 +55,6 @@ public class ClickToMove : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            if (InputHandler.npcSelected)
-            {
-                return;
-            }
-            
-            Vector3 mousePosition = Input.mousePosition;
-            mousePosition.z = -Camera.main.transform.position.z;
-            Vector3 targetPosition = Camera.main.ScreenToWorldPoint(mousePosition);
-            GraphNode nearestNode = astarPath.GetNearest(targetPosition).node;
-
-            if (nearestNode != null && nearestNode.Walkable)
-            {
-                Vector3 nearestNodePosition = (Vector3)nearestNode.position;
-                aiLerp.destination = nearestNodePosition;  // Setting destination should suffice
-            }
-        }
-
         // Direction calculation based on actual movement
         Vector3 displacement = transform.position - previousPosition;
         if (displacement.magnitude > 0.001f) // Use a threshold to prevent small inaccuracies

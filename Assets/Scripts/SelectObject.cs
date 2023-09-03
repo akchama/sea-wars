@@ -2,38 +2,52 @@ using UnityEngine;
 
 public class SelectObject : MonoBehaviour
 {
-    public static GameObject selectedNPC;
-    public GameObject selectionCirclePrefab; // Set this in the Inspector
+    public static SelectObject Instance; // Singleton
+
+    public GameObject selectedNPC;
+    public GameObject selectionCirclePrefab;  // Set this in the Inspector
     private GameObject selectionCircle;
 
-    private void Start()
+    private void Awake()
     {
-        // Initialize selection circle but set it to inactive
-        selectionCircle = Instantiate(selectionCirclePrefab, transform.position, Quaternion.identity);
-        selectionCircle.transform.SetParent(transform);
-        selectionCircle.SetActive(false);
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
-    private void OnMouseDown()
+    public void Select(GameObject target)
     {
-        // Deselect any previously selected NPC
-        if(selectedNPC != null)
+        if (selectedNPC)
         {
-            selectedNPC.GetComponent<SelectObject>().Deselect();
+            Deselect();
         }
 
-        // Select the current NPC
-        Select();
-    }
+        selectedNPC = target;
 
-    public void Select()  // made public
-    {
-        selectedNPC = gameObject;
+        if (selectionCircle == null)
+        {
+            selectionCircle = Instantiate(selectionCirclePrefab, target.transform.position, Quaternion.identity);
+            selectionCircle.transform.SetParent(target.transform);
+        }
+        else
+        {
+            selectionCircle.transform.position = target.transform.position;
+            selectionCircle.transform.SetParent(target.transform);
+        }
         selectionCircle.SetActive(true);
     }
 
-    public void Deselect()  // made public
+    public void Deselect()
     {
-        selectionCircle.SetActive(false);
+        if (selectionCircle)
+        {
+            selectionCircle.SetActive(false);
+        }
+        selectedNPC = null;
     }
 }

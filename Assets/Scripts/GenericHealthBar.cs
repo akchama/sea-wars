@@ -10,7 +10,6 @@ public class GenericHealthBar : MonoBehaviour
     {
         if (!healthSystem) return;
         slider.maxValue = healthSystem.maxHealth;
-        Debug.Log("Max Health: " + healthSystem.maxHealth);
         slider.value = healthSystem.currentHealth;
         healthSystem.OnHealthChanged += UpdateHealthBar;
     }
@@ -18,6 +17,5 @@ public class GenericHealthBar : MonoBehaviour
     private void UpdateHealthBar(float healthPercent)
     {
         slider.value = healthPercent * healthSystem.maxHealth;
-        Debug.Log("Slider value set to: " + slider.value);
     }
 }

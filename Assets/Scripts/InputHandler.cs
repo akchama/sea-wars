@@ -7,11 +7,12 @@ using UnityEngine.InputSystem;
 public class InputHandler : MonoBehaviour
 {
     private Camera _mainCamera;
-    public static bool npcSelected = false;
+    public ClickToMove clickToMove;
 
     private void Awake()
     {
         _mainCamera = Camera.main;
+        clickToMove = FindObjectOfType<ClickToMove>();
     }
 
     public void OnClick(InputAction.CallbackContext context)
@@ -22,27 +23,17 @@ public class InputHandler : MonoBehaviour
 
         if (rayHit.collider)
         {
-            // If hit something, check if it's an NPC
-            SelectObject selectObject = rayHit.collider.gameObject.GetComponent<SelectObject>();
-            if (selectObject)
+            if (rayHit.collider.gameObject.CompareTag("NPC"))
             {
-                npcSelected = true;
+                SelectObject.Instance.Select(rayHit.collider.gameObject);
             }
-            else
-            {
-                npcSelected = false;
-            }
-
-            Debug.Log(rayHit.collider.gameObject.name);
         }
         else
         {
-            // If didn't hit anything, deselect NPC if one is selected
-            if (SelectObject.selectedNPC)
-            {
-                SelectObject.selectedNPC.GetComponent<SelectObject>().Deselect();
-            }
-            npcSelected = false;
+            Vector3 mousePosition = Mouse.current.position.ReadValue();
+            mousePosition.z = -_mainCamera.transform.position.z;
+            Vector3 worldPosition = _mainCamera.ScreenToWorldPoint(mousePosition);
+            clickToMove.OnClick(worldPosition);
         }
     }
 }
