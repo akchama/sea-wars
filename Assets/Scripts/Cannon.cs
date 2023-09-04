@@ -11,6 +11,7 @@ public class Cannon : MonoBehaviour
 
     private bool isShooting = false;
     private Coroutine shootingCoroutine;
+    private GameObject _target;
 
     [SerializeField] public float shootingInterval = 2f;
 
@@ -55,7 +56,7 @@ public class Cannon : MonoBehaviour
     public void StartShooting(GameObject target)
     {
         if (shootingCoroutine != null) return;
-        
+        _target = target;
         isShooting = true;
         shootingCoroutine = StartCoroutine(ShootWithInterval(target));
         target.GetComponent<ICombat>().EnterCombat(gameObject);
@@ -67,6 +68,7 @@ public class Cannon : MonoBehaviour
         {
             StopCoroutine(shootingCoroutine);
             shootingCoroutine = null;
+            gameObject.GetComponent<ICombat>().ExitCombat(_target);
         }
 
         isShooting = false;

@@ -39,6 +39,7 @@ public class NPC : MonoBehaviour, IHealthSystem, ICombat
         if (playersInCombatWithMe.Contains(player))
         {
             playersInCombatWithMe.Remove(player);
+            npcCannon.StopShooting();
         }
     }
 

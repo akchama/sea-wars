@@ -93,6 +93,13 @@ public class Player : MonoBehaviour, IHealthSystem, ICombat
         if (playersInCombatWithMe.Contains(aggressor))
         {
             playersInCombatWithMe.Remove(aggressor);
+            foreach (var _attacker in playersInCombatWithMe)
+            {
+                if (_attacker.CompareTag("NPC"))
+                {
+                    _attacker.GetComponent<NPC>().ExitCombat(gameObject);
+                }
+            }
         }
     }
 }
