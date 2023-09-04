@@ -4,7 +4,6 @@ using UnityEngine.UI;
 public class GenericHealthBar : MonoBehaviour
 {
     public Slider slider;
-    public GameObject targetObject; // Assign this in the editor
     private IHealthSystem healthSystem;
     public Image barImage;
     private Color initialColor;
@@ -12,7 +11,7 @@ public class GenericHealthBar : MonoBehaviour
     private void Start()
     {
         // Find the IHealthSystem component on the target object
-        healthSystem = targetObject.GetComponent<IHealthSystem>();
+        healthSystem = gameObject.GetComponentInParent<IHealthSystem>();
         
         if (healthSystem == null)
         {
