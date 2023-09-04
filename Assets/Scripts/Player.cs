@@ -1,8 +1,9 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour, IHealthSystem
+public class Player : MonoBehaviour, IHealthSystem, ICombat
 {
     [SerializeField] private int m_maxHealth;
     [SerializeField] private int m_currentHealth;
@@ -13,6 +14,8 @@ public class Player : MonoBehaviour, IHealthSystem
     [SerializeField] public int repairAmount = 5;
 
     private Coroutine repairCoroutine;
+    [SerializeField] private List<GameObject> playersInCombatWithMe = new List<GameObject>();
+
 
     public event Action<float> OnHealthChanged = delegate { };
 
@@ -75,5 +78,21 @@ public class Player : MonoBehaviour, IHealthSystem
     {
         m_currentHealth = Mathf.Min(CurrentHealth + amount, MaxHealth);
         OnHealthChanged((float)CurrentHealth / MaxHealth);
+    }
+
+    public void EnterCombat(GameObject aggressor)
+    {
+        if (!playersInCombatWithMe.Contains(aggressor))
+        {
+            playersInCombatWithMe.Add(aggressor);
+        }
+    }
+
+    public void ExitCombat(GameObject aggressor)
+    {
+        if (playersInCombatWithMe.Contains(aggressor))
+        {
+            playersInCombatWithMe.Remove(aggressor);
+        }
     }
 }

@@ -42,8 +42,7 @@ Shader "Custom/WaterShader"
 
             half4 frag (v2f i) : SV_Target
             {
-                // Mimicking the GLSL logic here
-                float time = _Time.y * 0.5 + 23.0;
+                float time = _Time.y * 0.1 + 23.0;
                 float2 uv = i.uv;
                 float2 p = fmod(uv * 6.28318530718, 6.28318530718) - 250.0;
                 float2 i_value = p;
@@ -60,7 +59,11 @@ Shader "Custom/WaterShader"
                 c /= 5.0;
                 c = 1.17 - pow(c, 1.4);
                 half3 colour = half3(pow(abs(c), 8.0), pow(abs(c), 8.0), pow(abs(c), 8.0));
-                colour = clamp(colour + half3(0.0, 0.35, 0.5), 0.0, 1.0);
+                
+                // Making the water darker by multiplying the final color
+                colour *= 0.01; // 0.5 is the darkening factor, adjust as needed
+                
+                colour = clamp(colour + half3(0.0, 0.05, 0.08), 0.0, 0.3);
                 
                 return half4(colour, 1.0);
             }

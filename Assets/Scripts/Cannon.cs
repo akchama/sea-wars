@@ -7,6 +7,7 @@ public class Cannon : MonoBehaviour
     public GameObject cannonballPrefab;
     public float fireSpeed = 10.0f;
     public float arcHeightFactor = 0.2f;
+    public int damage = 20;
 
     private bool isShooting = false;
     private Coroutine shootingCoroutine;
@@ -36,7 +37,7 @@ public class Cannon : MonoBehaviour
                 NPC npc = target.GetComponent<NPC>();
                 if (npc != null)
                 {
-                    npc.TakeDamage(20);
+                    npc.TakeDamage(damage);
                 }
             }
             else if (target.CompareTag("Player"))
@@ -45,7 +46,7 @@ public class Cannon : MonoBehaviour
                 Player player = target.GetComponent<Player>();
                 if (player != null)
                 {
-                    player.TakeDamage(20);
+                    player.TakeDamage(damage);
                 }
             }
         });
@@ -57,6 +58,7 @@ public class Cannon : MonoBehaviour
         
         isShooting = true;
         shootingCoroutine = StartCoroutine(ShootWithInterval(target));
+        target.GetComponent<ICombat>().EnterCombat(gameObject);
     }
 
     public void StopShooting()

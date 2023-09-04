@@ -1,8 +1,9 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class NPC : MonoBehaviour, IHealthSystem
+public class NPC : MonoBehaviour, IHealthSystem, ICombat
 {
     [SerializeField] private int m_maxHealth;
     [SerializeField] private int m_currentHealth;
@@ -15,23 +16,30 @@ public class NPC : MonoBehaviour, IHealthSystem
     private Coroutine repairCoroutine;
     private Cannon npcCannon;
 
+    [SerializeField] private List<GameObject> playersInCombatWithMe = new();
     public event Action<float> OnHealthChanged = delegate { };
 
     private void Awake()
     {
         npcCannon = GetComponent<Cannon>();
         m_currentHealth = MaxHealth;
-        OnHealthChanged += (float health) => 
+    }
+    
+    public void EnterCombat(GameObject player)
+    {
+        if (!playersInCombatWithMe.Contains(player))
         {
-            if (health <= 0.0f) 
-            {
-                Die();
-            }
-            else 
-            {
-                Retaliate();
-            }
-        };
+            playersInCombatWithMe.Add(player);
+            Retaliate();
+        }
+    }
+
+    public void ExitCombat(GameObject player)
+    {
+        if (playersInCombatWithMe.Contains(player))
+        {
+            playersInCombatWithMe.Remove(player);
+        }
     }
 
     public void TakeDamage(int damage)
@@ -44,13 +52,12 @@ public class NPC : MonoBehaviour, IHealthSystem
             Die();
         }
     }
-    
+
     private void Retaliate()
     {
         if (npcCannon != null)
         {
-            // Assuming the player's GameObject is tagged as "Player"
-            GameObject player = GameObject.FindGameObjectWithTag("Player"); 
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
             npcCannon.StartShooting(player);
         }
     }
@@ -63,6 +70,7 @@ public class NPC : MonoBehaviour, IHealthSystem
             StopCoroutine(repairCoroutine);
             repairCoroutine = null;
         }
+
         Destroy(gameObject);
     }
 
@@ -91,6 +99,7 @@ public class NPC : MonoBehaviour, IHealthSystem
             {
                 Repair(repairAmount);
             }
+
             yield return new WaitForSeconds(repairRate);
         }
     }
