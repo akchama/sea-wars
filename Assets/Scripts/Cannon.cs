@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.UI;
 
 public class Cannon : MonoBehaviour
 {
@@ -60,9 +61,8 @@ public class Cannon : MonoBehaviour
         isShooting = true;
         shootingCoroutine = StartCoroutine(ShootWithInterval(target));
         target.GetComponent<ICombat>().EnterCombat(gameObject);
-        
     }
-
+    
     public void StopShooting()
     {
         if (shootingCoroutine != null)

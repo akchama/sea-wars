@@ -19,7 +19,11 @@ public class InputHandler : MonoBehaviour
     private PointerEventData click_data;
     private List<RaycastResult> click_results;
     private GameManager gameManager;
-
+    
+    [SerializeField] private GameObject startShootingButton;
+    [SerializeField] private GameObject stopShootingButton;
+    [SerializeField] private GameObject repairButton;
+    
     private void Awake()
     {
         _mainCamera = Camera.main;
@@ -82,5 +86,12 @@ public class InputHandler : MonoBehaviour
     {
         var target = gameManager.GetComponent<SelectObject>().selectedNPC;
         player.GetComponent<Cannon>().StartShooting(target);
+        startShootingButton.GetComponent<Image>().color = Color.red;
+    }
+    
+    public void OnStopShootButtonPress()
+    {
+        player.GetComponent<Cannon>().StopShooting();
+        startShootingButton.GetComponent<Image>().color = Color.white;
     }
 }

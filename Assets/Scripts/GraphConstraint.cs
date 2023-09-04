@@ -1,14 +1,20 @@
+using System;
+using System.Collections.Generic;
 using Pathfinding;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 public class GraphConstraint : MonoBehaviour
 {
     public static GraphConstraint Instance;
-    
+    public List<Vector3> walkableNodes;
+
     public float leftBound = -10f;
     public float rightBound = 10f;
     public float topBound = 10f;
     public float bottomBound = -10f;
+    
+    public event Action OnWalkableNodesUpdated;
     
     private void Awake()
     {
@@ -20,9 +26,11 @@ public class GraphConstraint : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        Init();
     }
 
-    private void Start()
+    private void Init()
     {
         AstarPath.active.AddWorkItem(new AstarWorkItem(ctx => {
             var gg = AstarPath.active.data.gridGraph;
@@ -32,15 +40,20 @@ public class GraphConstraint : MonoBehaviour
                     worldPoint.y < bottomBound || worldPoint.y > topBound) {
                     node.Walkable = false;
                 }
+                else
+                {
+                    walkableNodes.Add(worldPoint);
+                }
             });
 
             // Recalculate all grid connections
             // This is required because we have updated the walkability of some nodes
             // Note: In a future update, you'll want to change this to gg.RecalculateAllConnections, for performance.
             gg.GetNodes(node => gg.CalculateConnections((GridNodeBase)node));
+            OnWalkableNodesUpdated?.Invoke();
         }));
     }
-
+    
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
