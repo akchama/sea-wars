@@ -68,7 +68,8 @@ public class Cannon : MonoBehaviour
         {
             StopCoroutine(shootingCoroutine);
             shootingCoroutine = null;
-            gameObject.GetComponent<ICombat>().ExitCombat(_target);
+            _target.GetComponent<ICombat>().ExitCombat(gameObject);
+            _target = null;
         }
 
         isShooting = false;
