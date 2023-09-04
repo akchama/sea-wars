@@ -60,6 +60,7 @@ public class Cannon : MonoBehaviour
         isShooting = true;
         shootingCoroutine = StartCoroutine(ShootWithInterval(target));
         target.GetComponent<ICombat>().EnterCombat(gameObject);
+        
     }
 
     public void StopShooting()
@@ -68,7 +69,8 @@ public class Cannon : MonoBehaviour
         {
             StopCoroutine(shootingCoroutine);
             shootingCoroutine = null;
-            _target.GetComponent<ICombat>().ExitCombat(gameObject);
+            if (_target != null)
+                _target.GetComponent<ICombat>().ExitCombat(gameObject);
             _target = null;
         }
 

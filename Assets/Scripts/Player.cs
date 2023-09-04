@@ -45,8 +45,22 @@ public class Player : MonoBehaviour, IHealthSystem, ICombat
         Destroy(gameObject);
     }
 
+    public void ToggleRepairing()
+    {
+        if (repairCoroutine == null)
+        {
+            StartRepairing();
+        }
+        else
+        {
+            StopRepairing();
+        }
+    }
+    
     public void StartRepairing()
     {
+        if (playersInCombatWithMe.Count > 0) return;
+        
         if (repairCoroutine == null)
         {
             repairCoroutine = StartCoroutine(RepairWithInterval());
